@@ -3,7 +3,9 @@
 
 --Primární tabulka
 
---CREATE TABLE t_vera_vavrincova_project_SQL_primary_final AS  -- takto se vytvořila primární tabulka 
+-- takto se vytvořila primární tabulka: 
+
+--CREATE TABLE t_vera_vavrincova_project_SQL_primary_final AS  
 WITH 
   potraviny AS (
  SELECT 
@@ -11,21 +13,23 @@ WITH
        DATE(cp.date_to::DATE) AS datum_DO,
        EXTRACT(QUARTER FROM cp.date_from::DATE) AS kvartalP,   -- převede datum do kvartálu v roce
        EXTRACT(YEAR FROM cp.date_from::DATE) AS rokP,          -- převede datum do roku
-       ROUND(AVG(cp.value)) AS prumer_cena_potr,   -- průměrná cena jednotlivé potraviny podle období, roku a kvartálu
+       ROUND(AVG(cp.value)) AS prumer_cena_potr,   -- průměrná cena jednotlivé potraviny podle období
        cp.category_code,
        cpc.name AS potravina,
        cpc.price_unit AS jednotka
  FROM czechia_price cp
      JOIN czechia_price_category cpc
        ON cp.category_code = cpc.code
-     GROUP BY cp.category_code, cpc.name, datum_OD, datum_DO, rokP, kvartalP, jednotka
+     GROUP BY cp.category_code, datum_OD, datum_DO, cpc.name, rokP, kvartalP, jednotka
  ),
  mzdy AS (
  SELECT 
       cp2.payroll_quarter AS kvartalM,
       cp2.payroll_year AS rokM,
       AVG(cp2.value) AS prumer_mzda,   -- průměrná mzda podle odvětví, roku a kvartálu
-      cpib.name AS odvetvi
+      cpib.name AS odvetvi,
+      cpvt.code AS kod_mzdy,   --cpvt.code pokud je 5958, pak se jedná o hrubou mzdu zaměstnance
+ 	  cp2.industry_branch_code
  FROM czechia_payroll cp2
      JOIN czechia_payroll_industry_branch cpib 
        ON cp2.industry_branch_code = cpib.code
@@ -34,51 +38,17 @@ WITH
      JOIN czechia_payroll_calculation cpc2 
        ON cp2.calculation_code = cpc2.code
      WHERE cp2.value IS NOT NULL          -- eliminace chyb v tabulce - absence mzdy
-       AND cp2.value_type_code = '5958'   -- jen hrubá mzda
-     GROUP BY cpib.name, cp2.payroll_year, cp2.payroll_quarter
+       AND cp2.value_type_code = '5958'   -- kód 5958 udává průměrnou hrubou mzdu na zaměstnance
+     GROUP BY cpib.name, cp2.payroll_year, cp2.payroll_quarter, cpvt.code, cp2.industry_branch_code
  )
 SELECT   
    *
 FROM mzdy
   JOIN potraviny
      ON mzdy.kvartalM = potraviny.kvartalP AND mzdy.rokM = potraviny.rokP
-  ORDER BY mzdy.rokm, mzdy.kvartalM, potraviny.datum_OD, mzdy.odvetvi;
+  ORDER BY mzdy.rokm, mzdy.kvartalM, mzdy.odvetvi, potraviny.datum_OD, potraviny.potravina;
     
-       
+   
 
+SELECT * FROM t_vera_vavrincova_project_SQL_primary_final;
 
-
-SELECT  
-   cp.industry_branch_code,
-   cpib.name,
-   cp.payroll_year,
-   ROUND(AVG(cp.value), 0) AS prumerna_mzda_za_odvetvi,
-   LAG(ROUND(AVG(cp.value), 0)) OVER (      --LAG vrátí hodnotu z předchozího řádku
-       PARTITION BY cp.industry_branch_code --každé odvětví tvoří svou vlastní skupinu
-       ORDER BY cp.payroll_year  --seřazení podle roku v dané skupině odvětví
-   ) AS predchozi_mzda,
-   ROUND(AVG(cp.value), 0) 
-     - LAG(ROUND(AVG(cp.value), 0)) OVER (
-         PARTITION BY cp.industry_branch_code 
-         ORDER BY cp.payroll_year
-     ) AS rozdil_mzdy,  --vypočítá rozdíl dvou po sobě jdoucích řádků
-   CASE
-     WHEN ROUND(AVG(cp.value), 0) > LAG(ROUND(AVG(cp.value), 0)) OVER (
-            PARTITION BY cp.industry_branch_code 
-            ORDER BY cp.payroll_year 
-         ) THEN 'Růst'
-     WHEN ROUND(AVG(cp.value), 0) < LAG(ROUND(AVG(cp.value), 0)) OVER (
-            PARTITION BY cp.industry_branch_code 
-            ORDER BY cp.payroll_year
-         ) THEN 'Pokles'
-     ELSE 'Beze změny'
-   END AS trend
-FROM czechia_payroll cp
- JOIN czechia_payroll_industry_branch cpib 
-   ON cp.industry_branch_code = cpib.code
- WHERE cp.value_type_code = '5958' -- kód 5958 udává průměrnou hrubou mzdu na zaměstnance
-  AND cp.industry_branch_code IS NOT NULL   --odstranění řádků bez udání odvětví
- GROUP BY cp.industry_branch_code, cp.payroll_year,cpib.name
- ORDER BY cp.industry_branch_code,
-         cp.payroll_year ASC, 
-         prumerna_mzda_za_odvetvi ASC;

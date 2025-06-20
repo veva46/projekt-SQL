@@ -4,6 +4,7 @@
 -- Kolik je možné si koupit litrů mléka a kilogramů chleba za první a poslední srovnatelné období 
 -- v dostupných datech cen a mezd?
 
+--analýza z tabulek Engeta:
 
 WITH obdobi AS (  -- a vybere první a poslední srovnatelné období (tj.1týden - 7dní)
  SELECT                 --Dotaz vybere řádky jen pro Mléko a Chléb, jejich cenu 
@@ -38,7 +39,7 @@ SELECT   --průměrná MZDA
     CASE 
 		WHEN cp2.payroll_quarter = 1 AND cp2.payroll_year = 2006 THEN '1Q/2006'
 		WHEN cp2.payroll_quarter = 4 AND cp2.payroll_year = 2018 THEN '4Q/2018'
-		  --ELSE 'nesrovnávané období'
+		  ELSE 'nesrovnávané období'
 	END AS kvartal_rok
 FROM czechia_payroll cp2
   WHERE cp2.value_type_code = '5958'
@@ -115,3 +116,48 @@ FROM mzda
 -- od 10.12.2018 do 16.12.2018 (tj. 4 kvartál roku 2018) - poslední srovnatelné období 
      --je možné koupit za průměrnou mzdu 1367 kg chleba a 1727 l mléka
 
+
+
+--analýza z prim.tabulky:
+
+WITH mzda AS (  --- výpočet, kolik si lze koupit mléka a chleba za průměrnou mzdu ve srovnávaném období
+  SELECT 
+	TP.prumer_mzda,   -- průměrná hrubá mzda zaměstanců v období (pokud je value_type_code = '5958')
+	CASE 
+	   WHEN TP.kvartalM = 1 AND TP.rokM = 2006 THEN '1Q/2006'
+	   WHEN TP.kvartalM = 4 AND TP.rokM = 2018 THEN '4Q/2018'
+		  --ELSE 'nesrovnávané období'
+	END AS kvartal_rokM
+  FROM t_vera_vavrincova_project_SQL_primary_final TP
+   WHERE TP.kod_mzdy = '5958'
+     AND (TP.kvartalM = '1' AND TP.rokM = '2006')  -- pro 1. srovnatelné období 2.1.2006 do 8.1.2006 
+     OR (TP.kvartalM = '4' AND TP.rokM = '2018')   -- pro poslední srovn.období 10.12.2018 do 16.12.2018
+  ), 
+cena AS (
+   SELECT   -- kvartální cena potravin(mléka a chleba)
+	 TP.category_code,
+	 TP.potravina,
+	 TP.prumer_cena_potr,  --průměrná cena potraviny
+	 CASE 
+		WHEN (TP.kvartalP = 1) AND (TP.rokP = 2006) THEN '1Q/2006'
+		WHEN (TP.kvartalP = 4) AND (TP.rokP = 2018) THEN '4Q/2018'
+		  --ELSE 'nesrovnávané období'
+	 END AS kvartal_rokP
+   FROM t_vera_vavrincova_project_SQL_primary_final TP
+    --JOIN czechia_price_category cpc   --spojení tabulek již v prim.tabulce
+      --ON cp.category_code = cpc.code
+    WHERE ((TP.kvartalp = 1 AND TP.rokP = 2006)   -- pro 1. srovnatelné období
+        OR (TP.kvartalp = 4 AND TP.rokP = 2018)) -- pro poslední srovnatelné období
+	   AND (TP.category_code = '111301' OR TP.category_code = '114201') -- mléko a chleba;
+    ORDER BY kvartal_rokP, TP.category_code
+)
+SELECT 
+    mzda.kvartal_rokM,
+    mzda.prumer_mzda,
+    cena.potravina,
+    cena.prumer_cena_potr,
+    ROUND(mzda.prumer_mzda / cena.prumer_cena_potr) AS pocet_jednotek_potraviny_za_mzdu  --počet jednotek potraviny možné koupit za průměrnou mzdu
+FROM mzda
+ JOIN cena  --spojení tabulky cena a mzda, pro vypsání kvartálů
+   ON mzda.kvartal_rokM = cena.kvartal_rokP
+ ORDER BY mzda.kvartal_rokM, cena.potravina;

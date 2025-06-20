@@ -7,6 +7,9 @@
 
 --použiji skript z úkolu č.3 a dopracuji ho pro tento 4.úkol
 
+
+--analýza z tabulek Engeta:
+
 WITH    -- meziroční nárust cen potravin
 prumeryPOTR AS (
   SELECT   -- průměrné ceny potravin v letech
@@ -137,6 +140,7 @@ FROM procentaMZDY
 -- meziroční nárůst průmerné mzdy
 
 
+
 WITH    -- porovnání meziročních nárustů cen potravin a mezd
 prumeryPOTR AS ( 
   SELECT   -- meziroční růst cen potravin
@@ -235,15 +239,15 @@ procentaMZDY AS (
       mezirustMZDY.prumerna_mzda,
       mezirustMZDY.predchozi_mzda,
       mezirustMZDY.zmena_mzdy,
-	  ROUND(100*((prumerna_mzda - predchozi_mzda)/predchozi_mzda)) AS narust_mzdy_procenta
+	  ROUND(100*((prumerna_mzda - predchozi_mzda)/predchozi_mzda)) AS narust_mzdy_proc
    FROM mezirustMZDY
 )
 SELECT   
    prumer_rustu_cenPOTR.rok,
-   prumer_rustu_cenPOTR.nazev,
-   (prumer_rustu_cenPOTR.prumer_rustu - procentaMZDY.narust_mzdy_procenta) AS procent_rozdil_cena_mzda,
+   prumer_rustu_cenPOTR.nazev AS nazev_potraviny,
+   (prumer_rustu_cenPOTR.prumer_rustu - procentaMZDY.narust_mzdy_proc) AS rozdil_cena_mzda_proc,
    prumer_rustu_cenPOTR.prumer_rustu AS rust_cen_POTR_proc,
-   procentaMZDY.narust_mzdy_procenta,
+   procentaMZDY.narust_mzdy_proc,
    prumer_rustu_cenPOTR.zmena_ceny,
    procentaMZDY.zmena_mzdy
 FROM procentaMZDY
@@ -252,11 +256,128 @@ FROM procentaMZDY
   WHERE prumer_rustu_cenPOTR.predchozi_cena IS NOT NULL   --u r. 2006 neexistuje předchozí rok 
     AND procentaMZDY.predchozi_mzda IS NOT NULL
     --AND zmena_ceny = 'zdraženo'    -- uvažuji jen zdražení potravin      
-  	AND (prumer_rustu_cenPOTR.prumer_rustu - procentaMZDY.narust_mzdy_procenta) > 10
-  ORDER BY procent_rozdil_cena_mzda DESC, rok ASC
+  	AND (prumer_rustu_cenPOTR.prumer_rustu - procentaMZDY.narust_mzdy_proc) > 10
+  ORDER BY rozdil_cena_mzda_proc DESC, rok ASC
   ;              
--- meziroční nárust cen potravin byl výrazně vyšší než růst mezd (více než 10%) 
+-- meziroční nárůst cen potravin byl výrazně vyšší než růst mezd (více než 10%) 
    -- v roce 2007 u potraviny Papriky až 97% oproti zvýšení mezd o 7% - tj. rozdíl 90%	
-           --pak v roce 2013 u Konzumní brambory a v roce 2012 u Vajec	
--- víc než 60 položek (potravina/rok) bylo zvýšeno o víc než 10% oproti mzdám 
+   -- v roce 2013 u Konzumních brambor byl nárůst ceny oproti mzdám o 61%.  
+   -- v roce 2012 u Vajec byl nárůst ceny oproti mzdám o 53%.  
+   -- víc než 60 položek (potravina/rok) bylo zvýšeno o víc než 10% oproti mzdám 
 
+--analýza z primární tabulky:
+
+WITH    -- porovnání meziročních nárustů cen potravin a mezd
+prumeryPOTR AS ( 
+  SELECT   -- meziroční růst cen potravin
+     TP.rokP,
+     TP.category_code AS kategorie,
+     TP.potravina AS nazev,
+     TP.prumer_cena_potr     
+  FROM t_vera_vavrincova_project_SQL_primary_final TP
+    --JOIN czechia_price_category cpc     --spojení tab.již v prim.tabulce
+       --ON cp.category_code = cpc.code
+  ),
+srovnaniPOTR AS (
+  SELECT 
+    prumeryPOTR.rokP,
+    prumeryPOTR.kategorie,
+    prumeryPOTR.nazev,
+    prumeryPOTR.prumer_cena_potr,
+    LAG (prumer_cena_potr) OVER (PARTITION BY kategorie 
+      ORDER BY rokP) AS predchozi_cena
+  FROM prumeryPOTR   
+  ),
+mezirustPOTR AS (
+  SELECT 
+    srovnaniPOTR.rokP,
+    srovnaniPOTR.kategorie,
+    srovnaniPOTR.nazev,
+    srovnaniPOTR.prumer_cena_potr,
+    srovnaniPOTR.predchozi_cena, 
+    CASE 
+   	  WHEN (prumer_cena_potr - predchozi_cena) < 0 THEN 'zlevněno'
+   	  WHEN (prumer_cena_potr - predchozi_cena) > 0 THEN 'zdraženo'
+      WHEN (prumer_cena_potr - predchozi_cena) = 0 THEN 'stejná cena'        
+      ELSE 'nesrovnatelné s předchozím rokem'
+    END AS zmena_ceny
+   FROM srovnaniPOTR
+),
+procentaPOTR AS (
+    SELECT 
+      mezirustPOTR.rokP,
+      mezirustPOTR.kategorie,
+      mezirustPOTR.nazev,
+      mezirustPOTR.prumer_cena_potr,
+      mezirustPOTR.predchozi_cena,
+      mezirustPOTR.zmena_ceny,
+	  ROUND(100*((prumer_cena_potr - predchozi_cena)/predchozi_cena)) AS narust_ceny_procenta
+   FROM mezirustPOTR
+),
+prumer_rustu_cenPOTR AS (
+     SELECT   
+       procentaPOTR.rokP,
+       procentaPOTR.kategorie,
+       procentaPOTR.nazev,
+       procentaPOTR.prumer_cena_potr,
+       procentaPOTR.predchozi_cena,
+       procentaPOTR.zmena_ceny, 
+       AVG(procentaPOTR.narust_ceny_procenta) AS prumer_rustu
+     FROM procentaPOTR 
+        GROUP BY kategorie, nazev, rokP, prumer_cena_potr, predchozi_cena, zmena_ceny 
+        ORDER BY rokP, kategorie
+  ),
+prumeryMZDY AS (   -- meziroční nárůst průmerné mzdy
+  SELECT   
+     TP.rokM,
+     TP.prumer_mzda    
+  FROM t_vera_vavrincova_project_SQL_primary_final TP
+    --JOIN czechia_payroll_value_type cpvt
+     --  ON cp2.value_type_code = cpvt.code
+  ),
+srovnaniMZDY AS (
+  SELECT 
+    prumeryMZDY.rokM,
+    prumeryMZDY.prumer_mzda,
+    LAG(prumer_mzda) OVER (ORDER BY rokM) AS predchozi_mzda
+  FROM prumeryMZDY   
+ ),
+mezirustMZDY AS (
+  SELECT 
+    srovnaniMZDY.rokM,
+    srovnaniMZDY.prumer_mzda,
+    srovnaniMZDY.predchozi_mzda, 
+    CASE 
+   	  WHEN (prumer_mzda - predchozi_mzda) < 0 THEN 'snížena'
+   	  WHEN (prumer_mzda - predchozi_mzda) > 0 THEN 'zvýšena'
+      WHEN (prumer_mzda - predchozi_mzda) = 0 THEN 'stejná'        
+      ELSE 'nesrovnatelné s předchozím rokem'
+    END AS zmena_mzdy
+   FROM srovnaniMZDY
+),
+procentaMZDY AS (
+    SELECT 
+      mezirustMZDY.rokM,
+      mezirustMZDY.prumer_mzda,
+      mezirustMZDY.predchozi_mzda,
+      mezirustMZDY.zmena_mzdy,
+	  ROUND(100*((prumer_mzda - predchozi_mzda)/predchozi_mzda)) AS narust_mzdy_proc
+   FROM mezirustMZDY
+)
+SELECT   
+   prumer_rustu_cenPOTR.rokP,
+   prumer_rustu_cenPOTR.nazev AS nazev_potraviny,
+   (prumer_rustu_cenPOTR.prumer_rustu - procentaMZDY.narust_mzdy_proc) AS rozdil_cena_mzda_proc,
+   prumer_rustu_cenPOTR.prumer_rustu AS rust_cen_POTR_proc,
+   procentaMZDY.narust_mzdy_proc,
+   prumer_rustu_cenPOTR.zmena_ceny,
+   procentaMZDY.zmena_mzdy
+FROM procentaMZDY
+  JOIN prumer_rustu_cenPOTR
+     ON procentaMZDY.rokM = prumer_rustu_cenPOTR.rokP 
+  WHERE prumer_rustu_cenPOTR.predchozi_cena IS NOT NULL   --u r. 2006 neexistuje předchozí rok 
+    AND procentaMZDY.predchozi_mzda IS NOT NULL
+    AND zmena_ceny = 'zdraženo'    -- uvažuji jen zdražení potravin      
+  	AND (prumer_rustu_cenPOTR.prumer_rustu - procentaMZDY.narust_mzdy_proc) > 10
+  ORDER BY rozdil_cena_mzda_proc DESC, rokM ASC
+  ;
