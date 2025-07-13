@@ -97,8 +97,6 @@ SELECT
      ELSE 'Beze změny'
    END AS trend
 FROM t_vera_vavrincova_project_SQL_primary_final tpr  
-  --JOIN czechia_payroll_industry_branch cpib   --spojení tabulek již v primární tabulce
-  --   ON cp2.industry_branch_code = cpib.code
   WHERE tpr.kod_mzdy = 5958        -- kód 5958 udává průměrnou hrubou mzdu na zaměstnance
   GROUP BY tpr.industry_branch_code, tpr.odvetvi, tpr.rok_m 
     )

@@ -188,8 +188,6 @@ prumery AS (
      tpr.potravina AS nazev,
      tpr.prumer_cena_potr    
   FROM t_vera_vavrincova_project_SQL_primary_final tpr
-    --JOIN czechia_price_category cpc   --spojení tab. již v prim.tabulce
-       --ON cp.category_code = cpc.code
     ORDER BY nazev ASC
   ),
 srovnani AS (

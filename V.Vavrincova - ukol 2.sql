@@ -144,8 +144,6 @@ cena AS (
 		  --ELSE 'nesrovnávané období'
 	 END AS kvartal_rok_p
    FROM t_vera_vavrincova_project_SQL_primary_final tpr
-    --JOIN czechia_price_category cpc   --spojení tabulek již v prim.tabulce
-      --ON cp.category_code = cpc.code
     WHERE ((tpr.kvartal_p = 1 AND tpr.rok_p = 2006)   -- pro 1. srovnatelné období
         OR (tpr.kvartal_p = 4 AND tpr.rok_p = 2018)) -- pro poslední srovnatelné období
 	   AND (tpr.category_code = 111301 OR tpr.category_code = 114201) -- mléko a chleba;
