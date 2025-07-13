@@ -2,7 +2,6 @@ Engeto DataAcademy 2025_01_23
 projekt DA SQL 
 Věra Vavrincová
  
-Odpovědi na výzkumné otázky:
 
 Primární tabulka:  t_vera_vavrincova_project_sql_primary_final
 Zdroj: 
@@ -19,6 +18,7 @@ Postup:
 pomocí funkce JOIN byla spojena tabulka economies s vytvořenou primární tabulkou.
 Jsou vyčíslena data za předchozí rok pro populaci a pro HDP v některých státech EU, a jsou porovnány předchozí roky.
 
+Odpovědi na výzkumné otázky:
 
 V jednotlivých úkolech je vždy uvedeno několik skriptů, pro zdroj z tabulek Engeta a poté pro zdroj s primární, resp. Sekundární, tabulky. U skriptů je popis (v poznámce).
 

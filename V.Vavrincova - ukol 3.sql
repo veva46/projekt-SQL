@@ -177,33 +177,34 @@ FROM prumer_rustu_cen
              --např. Hovězí maso zadní bez kosti v roce 2012 až o 11%
              --např. Kuřata kuchaná celá v roce 2007 až o 15%
 
+
 --analýza z primární tabulky:
 
 WITH   --procentuální růst cen potravin
 prumery AS (
   SELECT   -- průměrné ceny potravin v letech
-     TP.rokP,
-     TP.category_code AS kategorie,
-     TP.potravina AS nazev,
-     TP.prumer_cena_potr    
-  FROM t_vera_vavrincova_project_SQL_primary_final TP
+     tpr.rok_p,
+     tpr.category_code AS kategorie,
+     tpr.potravina AS nazev,
+     tpr.prumer_cena_potr    
+  FROM t_vera_vavrincova_project_SQL_primary_final tpr
     --JOIN czechia_price_category cpc   --spojení tab. již v prim.tabulce
        --ON cp.category_code = cpc.code
     ORDER BY nazev ASC
   ),
 srovnani AS (
   SELECT 
-    prumery.rokP,
+    prumery.rok_p,
     prumery.kategorie,
     prumery.nazev,
     prumery.prumer_cena_potr,
     LAG (prumery.prumer_cena_potr) OVER (PARTITION BY kategorie 
-      ORDER BY rokP) AS predchozi_cena
+      ORDER BY rok_p) AS predchozi_cena
   FROM prumery   
   ),
 mezirust AS (
   SELECT 
-    srovnani.rokP,
+    srovnani.rok_p,
     srovnani.kategorie,               
     srovnani.nazev,                           
     srovnani.prumer_cena_potr,
@@ -218,7 +219,7 @@ mezirust AS (
 ),
 procenta AS (
     SELECT 
-      mezirust.rokP,                            
+      mezirust.rok_p,                            
       mezirust.kategorie,
       mezirust.nazev,
       mezirust.prumer_cena_potr,
@@ -229,7 +230,7 @@ procenta AS (
 ),
 prumer_rustu_cen AS (
      SELECT   
-       procenta.rokP,
+       procenta.rok_p,
        procenta.kategorie,
        procenta.nazev,
        procenta.prumer_cena_potr,
@@ -237,12 +238,11 @@ prumer_rustu_cen AS (
        procenta.zmena_ceny, 
        AVG(procenta.narust_ceny_procenta) AS prumer_rustu
      FROM procenta 
-        GROUP BY kategorie, nazev, rokP, prumer_cena_potr, predchozi_cena, zmena_ceny 
-        ORDER BY rokP, kategorie
+        GROUP BY kategorie, nazev, rok_p, prumer_cena_potr, predchozi_cena, zmena_ceny 
+        ORDER BY rok_p, kategorie
  )
 SELECT
-     prumer_rustu_cen.rokP,
-     --prumer_rustu_cen.kategorie,
+     prumer_rustu_cen.rok_p,
      prumer_rustu_cen.nazev,
      prumer_rustu_cen.prumer_cena_potr,
      prumer_rustu_cen.predchozi_cena,
@@ -251,4 +251,4 @@ SELECT
 FROM prumer_rustu_cen     
     WHERE predchozi_cena IS NOT NULL   
       AND zmena_ceny = 'zdraženo'   --- uvažuji jen zdražované položky
-    ORDER BY prumer_rustu, rokP, nazev ASC;
+    ORDER BY prumer_rustu, rok_p, nazev ASC;
