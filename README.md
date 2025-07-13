@@ -1,3 +1,4 @@
+
 # projekt-SQL
 
 Engeto DataAcademy 2025_01_23
@@ -15,5 +16,6 @@ pro zdroj z tabulek Engeta a pote pro zdroj s primarni (resp. sekundarni) tabulk
 U skriptu je kratky popis. Vypocet pres primarni a sekundarni tabulky trva mnohem delsi cas.
 
 Dekuji firme Engeto a vsem lektorum.
+
 
 

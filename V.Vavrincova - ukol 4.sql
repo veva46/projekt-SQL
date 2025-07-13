@@ -277,7 +277,7 @@ prumery_potr AS (
      tpr.potravina AS nazev,
      tpr.prumer_cena_potr     
   FROM t_vera_vavrincova_project_SQL_primary_final tpr
-  ),
+ ),
 srovnani_potr AS (
   SELECT 
     prumery_potr.rok_p,
