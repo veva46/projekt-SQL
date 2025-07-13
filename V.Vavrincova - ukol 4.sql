@@ -277,9 +277,7 @@ prumery_potr AS (
      tpr.potravina AS nazev,
      tpr.prumer_cena_potr     
   FROM t_vera_vavrincova_project_SQL_primary_final tpr
-    --JOIN czechia_price_category cpc     --spojení tab.již v prim.tabulce
-       --ON cp.category_code = cpc.code
-  ),
+ ),
 srovnani_potr AS (
   SELECT 
     prumery_potr.rok_p,
@@ -334,8 +332,6 @@ prumery_mzdy AS (   -- meziroční nárůst průmerné mzdy
      tpr.rok_m,
      tpr.prumer_mzda    
   FROM t_vera_vavrincova_project_SQL_primary_final tpr
-    --JOIN czechia_payroll_value_type cpvt
-     --  ON cp2.value_type_code = cpvt.code
   ),
 srovnani_mzdy AS (
   SELECT 
