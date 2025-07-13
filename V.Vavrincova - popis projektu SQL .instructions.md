@@ -21,6 +21,7 @@ Jsou vyčíslena data za předchozí rok pro populaci a pro HDP v některých st
 Odpovědi na výzkumné otázky:
 
 V jednotlivých úkolech je vždy uvedeno několik skriptů, pro zdroj z tabulek Engeta a poté pro zdroj s primární, resp. Sekundární, tabulky. U skriptů je popis (v poznámce).
+Jednotlivé skripty jsou formátovány pomocí https://codebeautify.org/sqlformatter
 
 
 Úkol č.1 
