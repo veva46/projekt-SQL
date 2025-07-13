@@ -9,7 +9,7 @@ Primarni tabulka:  t_vera_vavrincova_project_sql_primary_final
 Sekundarni tabulka: t_vera_vavrincova_project_sql_secondary_final
 
 Jednotlive ukoly (vyzkumne otazky) jsou v souborech "V.Vavrincova - ukol 1.sql" az "V.Vavrincova - ukol 5.sql"
-Popis jednotlivych ukolu je uveden v souboru "V.Vavrincova - popis projektu SQL.instructions.md".
+Popis jednotlivych ukolu je uveden v souboru "V.Vavrincova - popis projektu SQL.md".
 
 Jednotlivé skripty jsou formátovány pomocí https://codebeautify.org/sqlformatter
 
