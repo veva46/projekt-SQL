@@ -78,7 +78,7 @@ Postup:
 Jako první část pro meziroční nárůst průměrných cen potravin je použit skript z úlohy č.3 a je dopracován. Obdobně je řešena část pro meziroční nárůst průměrné mzdy. Tyto části jsou poté porovnány. 
 
 Úkol č.5 
--Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
+- Má výška HDP vliv na změny ve mzdách a cenách potravin? Neboli, pokud HDP vzroste výrazněji v jednom roce, projeví se to na cenách potravin či mzdách ve stejném nebo následujícím roce výraznějším růstem?
 
 Výška HDP má jistý vliv na ceny potravin a mzdy. 
 Při zvyšování HDP se většinou v dalším roce zvýšila průměrná mzda (např.r.2015, 2017). 
