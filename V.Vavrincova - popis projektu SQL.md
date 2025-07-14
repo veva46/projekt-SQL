@@ -72,7 +72,7 @@ Byla zjišťována předchozí cena za minulý rok u každé potraviny, a ta byl
 Meziroční nárůst cen potravin byl výrazně vyšší než růst mezd (více než 10%) v roce 2007 u potraviny Papriky až 97% oproti zvýšení mezd o 7% - tj. rozdíl 90%.
 Pak v roce 2013 u konzumních brambor byl nárůst ceny oproti mzdám o 61% a 
 v roce 2012 u vajec byl nárůst ceny oproti mzdám o 53%.  
-Z analýzy je vidět, že víc než 60 položek (potravina/rok) bylo zvýšeno o víc než 10% oproti mzdám 
+Z analýzy je vidět, že víc než 60 položek (potravina/rok) bylo zvýšeno o víc než 10% oproti mzdám.
 
 Postup:  
 Jako první část pro meziroční nárůst průměrných cen potravin je použit skript z úlohy č.3 a je dopracován. Obdobně je řešena část pro meziroční nárůst průměrné mzdy. Tyto části jsou poté porovnány. 

@@ -366,7 +366,7 @@ FROM
 WHERE 
   hdp.country = 'Czech Republic' --ČR
   AND hdp.YEAR BETWEEN 2006 
-  AND 2018 -- období pro porovnání cen potravin a mezd - viz.úkoly 1-4
+  AND 2018 -- období 2006-2018 pro porovnání cen potravin a mezd - viz.úkoly 1-4
   AND (
     prum_potr.prumer_rustu - procenta_mzdy.narust_mzdy_proc
   ) IS NOT NULL 
