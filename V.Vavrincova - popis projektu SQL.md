@@ -88,11 +88,10 @@ Ceny potravin se zvedly v závislosti na zvýšení HDP již v tom stejném roce
 Postup:
 Z tabulky economies jsou přebrána data HDP. Jsou použity analýzy předchozích úkolů. 
 K porovnání jsou použita procentuální data nárůstu mezd, cen a HDP.
-V prvním skriptu jsou uvažovány všechny zkoumané potraviny.
+V prvním skriptu jsou uvažovány všechny zkoumané potraviny a je porovnán meziroční nárust cen jednotlivých potravin, mezd a HDP v ČR v letech 2006-2018.
 Ve druhém skriptu je uvažována zprůměrovaná cena všech zkoumaných potravin za rok, a tato je potom srovnána s HDP a mzdou v daném roce.
-Poznámka: GINI - Giniho koeficient je číslo, které ukazuje nerovnost v příjmech nebo majetku v určité společnosti 
-(pohybuje se mezi 0 a 1 : 0-všichni mají stejně, 1-jeden má všechno, ostatní nic (většinou se udává v %)).
-
+Ve třetím skriptu je HDP v ČR v letech 1991 - 2020
+Ve čtvrtém a pátém skriptu je HDP v ostatních státech světa.
 
 
 Tento projekt mě mnohému naučil. Ještě mám co zlepšovat, ale základy SQL už mám. 
