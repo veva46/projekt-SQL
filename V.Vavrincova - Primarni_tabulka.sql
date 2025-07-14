@@ -4,7 +4,9 @@
 --Primární tabulka
 
 
-CREATE TABLE t_vera_vavrincova_project_SQL_primary_final AS WITH potraviny AS (
+CREATE TABLE t_vera_vavrincova_project_SQL_primary_final AS 
+WITH 
+potraviny AS (
   SELECT 
     DATE(cp.date_from :: DATE) AS datum_od, 
     DATE(cp.date_to :: DATE) AS datum_do, 

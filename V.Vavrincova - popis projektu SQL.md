@@ -7,7 +7,7 @@ Primární tabulka:  t_vera_vavrincova_project_sql_primary_final
 Zdroj: 
 chzechia_price , czechia_payroll, czechia_price_category,  
 Postup: 
-pomocí funkce JOIN byly spojeny tabulky chzechia_price a tabulky czechia_payroll a jejich vedlejších tabulek. Byly určeny průměrné mzdy za odvětví a rok, 
+pomocí funkce JOIN byly spojeny tabulky chzechia_price a tabulky czechia_payroll a jejich vedlejší tabulky. Byly určeny průměrné mzdy za odvětví a rok, 
 a průměrné ceny jednotlivých potravin podle kategorie, období (kvartál a rok).
 
 Sekundární tabulka:  t_vera_vavrincova_project_sql_secondary_final
