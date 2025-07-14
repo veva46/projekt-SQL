@@ -3,17 +3,21 @@ projekt DA SQL
 Věra Vavrincová
  
 
-Primární tabulka:  t_vera_vavrincova_project_sql_primary_final
+Primární tabulka:  
+t_vera_vavrincova_project_sql_primary_final
+
 Zdroj: 
 chzechia_price , czechia_payroll, czechia_price_category,  
 Postup: 
 pomocí funkce JOIN byly spojeny tabulky chzechia_price a tabulky czechia_payroll a jejich vedlejší tabulky. Byly určeny průměrné mzdy za odvětví a rok, 
 a průměrné ceny jednotlivých potravin podle kategorie, období (kvartál a rok).
 
-Sekundární tabulka:  t_vera_vavrincova_project_sql_secondary_final
-(jako dodatečný materiál připravte i tabulku s HDP, GINI koeficientem a populací dalších evropských států ve stejném období, jako primární přehled pro ČR.)
+Sekundární tabulka:  
+t_vera_vavrincova_project_sql_secondary_final
+
 Zdroj: 
 primární tabulka (t_vera_vavrincova_project_sql_primary_final) , economies
+(jako dodatečný materiál připravte i tabulku s HDP, GINI koeficientem a populací dalších evropských států ve stejném období, jako primární přehled pro ČR.)
 Postup: 
 pomocí funkce JOIN byla spojena tabulka economies s vytvořenou primární tabulkou.
 Jsou vyčíslena data za předchozí rok pro populaci a pro HDP v některých státech EU, a jsou porovnány předchozí roky.
