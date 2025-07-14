@@ -25,7 +25,7 @@ Jednotlivé skripty jsou formátovány pomocí https://codebeautify.org/sqlforma
 
 
 Úkol č.1 
-– Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?
+- Rostou v průběhu let mzdy ve všech odvětvích, nebo v některých klesají?
 
 Podle analýzy dat je vidět, že s každým dalším rokem je ve většině odvětví vždy vzestup průměrné mzdy. Největší nárůst mezd byl ve Zdravotnictví v r.2021 oproti předchozímu roku.
 Pokles mezd je minoritní, je vidět asi u 20-ti analyzovaných položek (rok/odvětví). 
